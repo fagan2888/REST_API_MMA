@@ -1,0 +1,6 @@
+# ipynb
+.ipynb/*
+*.ipynb
+
+# git
+.git/*
