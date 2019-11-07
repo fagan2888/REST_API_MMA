@@ -5,11 +5,10 @@ import json
 
 app = Flask(__name__)
 
-
 @app.route('/')
 def index():
-    return 'www.bestfightodds.com API'
-        
+    return json.dumps('www.bestfightodds.com API')
+
 def connect():
     '''
     Pulls page from url and converts to beautifulsoup object, to then be used by other funcs.
@@ -22,15 +21,18 @@ def connect():
     response = urllib.request.urlopen(request)
     html = response.read()
     soup = BeautifulSoup(html, 'html.parser')
+
+    print(dir(response))
     
-    return soup
+    return soup, response
         
 @app.route('/event_list')
-def get_event_list():
+def get_event_list(soup=None):
     '''
     Parses list of events and their dates. Returns json object.
     '''
-    soup = connect()
+    if not soup:
+        soup, _ = connect()
     
     event_list = [a_href.text for a_href in soup.find_all('a', href=True) if a_href['href'].startswith('/events')]
     event_dates = [span.text for span in soup.find_all('span', {'class': 'table-header-date'})]
@@ -39,37 +41,39 @@ def get_event_list():
     return json_events
 
 @app.route('/odds_makers_list')
-def get_bettor_list():
+def odds_makers_list(soup=None):
     '''
     Parses list of bettors. Returns json object.
     '''
-    soup = connect()
+    if not soup:
+        soup, _ = connect()
     
     odds_maker_list = sorted(list(set([a_href.text for a_href in soup.find_all('a', href=True) if a_href['href'].startswith('/out/')])))
     json_odds_makers = json.dumps(odds_maker_list)
     
     return json_odds_makers
 
-def get_bettor_list_helper(soup):
+def odds_makers_list_helper(soup):
     odds_maker_list = sorted(list(set([a_href.text for a_href in soup.find_all('a', href=True) if a_href['href'].startswith('/out/')])))
     return odds_maker_list
 
-@app.route('/fighter_list/<id_>')
-def get_fighter_list(id_):
+@app.route('/fighter_list/<event_id>')
+def get_fighter_list(event_id, soup=None):
     '''
     Parses list of fighters for a particular event id. Event id is an int ordering by date occuring.
     Returns the event name and list of fighters as json object.
     If the event id is not an int, less than 0, or greater than the # of events, it's invalid.
     '''
-    soup = connect()
+    if not soup:
+        soup, _ = connect()
     
     tbls_fighters = soup.find_all('div', {'class': 'table-inner-wrapper'})
 
     ## event id validity check ##
-    if id_.isdigit():
-        id_ = int(id_)
-        if (id_ >= 0) and (id_ < len(tbls_fighters)):
-            tbl = tbls_fighters[id_]
+    if event_id.isdigit():
+        event_id = int(event_id)
+        if (event_id >= 0) and (event_id < len(tbls_fighters)):
+            tbl = tbls_fighters[event_id]
         else:
             return 'Invalid event number'
     else:
@@ -83,7 +87,7 @@ def get_fighter_list(id_):
     
     ## event title ##
     tbls_events = soup.find_all('div', {'class': 'table-header'})
-    tbl = tbls_events[id_]
+    tbl = tbls_events[event_id]
     event_title = [a_href.text for a_href in tbl.find_all('a', href=True) if a_href['href'].startswith('/events/')][0]
 
     json_fighter_list = json.dumps({event_title: fighter_list})
@@ -91,7 +95,7 @@ def get_fighter_list(id_):
     return json_fighter_list
 
 @app.route('/odds/<fighter_name>')
-def get_fighter_odds(fighter_name):
+def get_fighter_odds(fighter_name, soup=None):
     '''
     Pulls odds for inputted fighter for first event they're present on sorted by date.
     Also returns opponent's name. Can search for opponent's odds with same API call with oponent name.
@@ -104,7 +108,8 @@ def get_fighter_odds(fighter_name):
     if fighter.isdigit():
         return 'Invalid fighter name. Separate first and last name by "+".'
 
-    soup = connect()
+    if not soup:
+        soup, _ = connect()
 
     spans_fighter = [x for x in soup.find_all('span', {'class':'tw'}) if x.text.lower() == fighter.lower()]
     if not spans_fighter:
@@ -112,7 +117,7 @@ def get_fighter_odds(fighter_name):
 
     td = spans_fighter[1] ## always take second one ##
 
-    for bettor in get_bettor_list_helper(soup):
+    for bettor in odds_makers_list_helper(soup):
         td = td.find_next('td')
         odds_dic[bettor] = td.text.replace('▲', '').replace('▼', '')
 
@@ -126,4 +131,4 @@ def get_fighter_odds(fighter_name):
     return json_fighter_odds
 
 if __name__ == '__main__':
-	app.run(host='0.0.0.0')
+	app.run(host='0.0.0.0', debug=True)
