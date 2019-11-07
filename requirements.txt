@@ -1,2 +1,4 @@
 flask
 beautifulsoup4
+pytest
+requests

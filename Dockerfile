@@ -10,4 +10,4 @@ RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
 
-ENTRYPOINT python /var/docker-restapi/main.py
+ENTRYPOINT pytest -v && python /var/docker-restapi/main.py
