@@ -50,6 +50,10 @@ def get_bettor_list():
     
     return json_odds_makers
 
+def get_bettor_list_helper(soup):
+    odds_maker_list = sorted(list(set([a_href.text for a_href in soup.find_all('a', href=True) if a_href['href'].startswith('/out/')])))
+    return odds_maker_list
+
 @app.route('/fighter_list/<id_>')
 def get_fighter_list(id_):
     '''
@@ -99,6 +103,8 @@ def get_fighter_odds(fighter_name):
     
     if fighter.isdigit():
         return 'Invalid fighter name. Separate first and last name by "+".'
+
+    soup = connect()
 
     spans_fighter = [x for x in soup.find_all('span', {'class':'tw'}) if x.text.lower() == fighter.lower()]
     if not spans_fighter:
