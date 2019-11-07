@@ -86,5 +86,38 @@ def get_fighter_list(id_):
     
     return json_fighter_list
 
+@app.route('/odds/<fighter_name>')
+def get_fighter_odds(fighter_name):
+    '''
+    Pulls odds for inputted fighter for first event they're present on sorted by date.
+    Also returns opponent's name. Can search for opponent's odds with same API call with oponent name.
+    Combine name with spaces (i.e. jon jones as jon+jones).
+    '''
+    odds_dic = {}
+    opponent = ''
+    fighter = ' '.join(fighter_name.split('+')).lower()
+    
+    if fighter.isdigit():
+        return 'Invalid fighter name. Separate first and last name by "+".'
+
+    spans_fighter = [x for x in soup.find_all('span', {'class':'tw'}) if x.text.lower() == fighter.lower()]
+    if not spans_fighter:
+        return 'Fighter name not found. Separate first and last name by "+".'
+
+    td = spans_fighter[1] ## always take second one ##
+
+    for bettor in get_bettor_list_helper(soup):
+        td = td.find_next('td')
+        odds_dic[bettor] = td.text.replace('▲', '').replace('▼', '')
+
+    opponent = td.find_next('span', {'class':'tw'}).find_next('span', {'class':'tw'}).text
+
+    fighter_odds_dic = {'odds': odds_dic,
+                        'opponent': opponent}
+
+    json_fighter_odds = json.dumps(fighter_odds_dic)
+
+    return json_fighter_odds
+
 if __name__ == '__main__':
 	app.run(host='0.0.0.0')
