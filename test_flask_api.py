@@ -27,6 +27,17 @@ def client(request):
     request.addfinalizer(teardown)
     return test_client
 
+@pytest.fixture 
+def static_soup(client):
+	'''
+	HTML page is constantly updated with new informtion. 
+	Cache static page to test functionality.
+	'''
+	html = open(html_fname, 'r', encoding='utf-8').read()
+	soup = BeautifulSoup(html, 'html.parser')	
+
+	return soup
+
 def test_connect(client):
     _, response = main.connect()
     assert response.status == 200
@@ -35,13 +46,9 @@ def test_index(client):
     response = client.get(url + '/')
     assert b'"www.bestfightodds.com API"' == response.data
 
-def test_get_event_list():
-	'''
-	Dynamic web-page, so test functionality with saved static web-page.
-	'''
-	html = open(html_fname, 'r', encoding='utf-8').read()
-	soup = BeautifulSoup(html, 'html.parser')
-	json_response = main.get_event_list(soup)
+@pytest.mark.static
+def test_get_event_list(static_soup):
+	json_response = main.get_event_list(static_soup)
 
 	assert json_response == json.dumps({"Bellator 233: Salter vs. van Steenis": "November 8th", 
 										"Combate 49: San Antonio": "November 8th", 
@@ -51,13 +58,9 @@ def test_get_event_list():
 										"UFC 245: Usman vs. Covington": "December 14th", 
 										"UFC on ESPN+ 23: Ortega vs. The Korean Zombie": "December 21st"})
 
-def test_odds_makers_list():
-	'''
-	Dynamic web-page, so test functionality with saved static web-page.
-	'''
-	html = open(html_fname, 'r', encoding='utf-8').read()
-	soup = BeautifulSoup(html, 'html.parser')
-	json_response = main.odds_makers_list(soup)
+@pytest.mark.static
+def test_odds_makers_list(static_soup):
+	json_response = main.odds_makers_list(static_soup)
 
 	assert json_response == json.dumps(["5Dimes", 
 										"Bet365", 
@@ -73,10 +76,9 @@ def test_odds_makers_list():
 										"TheGreek", 
 										"William\u00a0H."])
 
-def test_odds_makers_list_helper():
-	html = open(html_fname, 'r', encoding='utf-8').read()
-	soup = BeautifulSoup(html, 'html.parser')
-	bettor_lst = main.odds_makers_list_helper(soup)
+@pytest.mark.static
+def test_odds_makers_list_helper(static_soup):
+	bettor_lst = main.odds_makers_list_helper(static_soup)
 
 	assert bettor_lst == ["5Dimes", 
 						  "Bet365", 
@@ -92,13 +94,9 @@ def test_odds_makers_list_helper():
 						  "TheGreek",
 						  "William\u00a0H."]
 
-def test_get_fighter_list():
-	'''
-	Dynamic web-page, so test functionality with saved static web-page.
-	'''
-	html = open(html_fname, 'r', encoding='utf-8').read()
-	soup = BeautifulSoup(html, 'html.parser')
-	json_response = main.get_fighter_list('1', soup)
+@pytest.mark.static
+def test_get_fighter_list(static_soup):
+	json_response = main.get_fighter_list('1', static_soup)
 
 	assert json_response == json.dumps({"Combate 49: San Antonio": ["Andre Barquero Morera", 
 																	"Eduardo Alvarado Osuna", 
@@ -117,13 +115,9 @@ def test_get_fighter_list():
 																	"Carlos Melara", 
 																	"Roy Sarabia"]})
 
-def test_get_fighter_odds():
-	'''
-	Dynamic web-page, so test functionality with saved static web-page.
-	'''
-	html = open(html_fname, 'r', encoding='utf-8').read()
-	soup = BeautifulSoup(html, 'html.parser')
-	json_response = main.get_fighter_odds('colby+covington', soup)
+@pytest.mark.static
+def test_get_fighter_odds(static_soup):
+	json_response = main.get_fighter_odds('colby+covington', static_soup)
 
 	assert json_response == json.dumps({"odds": {"5Dimes": "+145", 
 												 "Bet365": "", 
