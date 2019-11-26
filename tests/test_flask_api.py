@@ -15,7 +15,7 @@ import pytest
 import main
 
 url = 'http://127.0.0.1:5000' # The root url of the flask app
-html_fname = 'test_page.html'
+html_fname = 'tests/test_page.html'
 
 @pytest.fixture
 def client(request):

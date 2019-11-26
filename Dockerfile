@@ -10,4 +10,4 @@ RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
 
-ENTRYPOINT pytest -v && python /var/docker-restapi/main.py
+ENTRYPOINT pytest -v /var/docker-restapi/tests/test_flask_api.py && python /var/docker-restapi/main.py
