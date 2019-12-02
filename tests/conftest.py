@@ -16,7 +16,11 @@ if os.getcwd().endswith('tests'):
 else:
 	html_fname = 'tests/test_page.html'	
 
-@pytest.fixture()
+'''
+scope='session' --> all functions share one setup and teardown call
+scope='function' --> runs once per function 
+'''
+@pytest.fixture(scope='session')
 def client(request):
     test_client = main.app.test_client()
 
@@ -26,7 +30,11 @@ def client(request):
     request.addfinalizer(teardown)
     return test_client
 
-@pytest.fixture()
+'''
+scope='session' --> all functions share one setup and teardown call
+scope='function' --> runs once per function 
+'''
+@pytest.fixture(scope='session')
 def static_soup(client):
 	'''
 	HTML page is constantly updated with new informtion. 
