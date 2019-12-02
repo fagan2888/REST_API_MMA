@@ -5,9 +5,7 @@ Command is `pytest -v`.
 Functions besides test_connect and test_index pull dynamic data.
 '''
 
-import requests
 from flask import Flask
-import os
 import json 
 from bs4 import BeautifulSoup
 import pytest
@@ -15,28 +13,6 @@ import pytest
 import main
 
 url = 'http://127.0.0.1:5000' # The root url of the flask app
-html_fname = 'tests/test_page.html'
-
-@pytest.fixture
-def client(request):
-    test_client = main.app.test_client()
-
-    def teardown():
-        pass # databases and resourses have to be freed at the end. But so far we don't have anything
-
-    request.addfinalizer(teardown)
-    return test_client
-
-@pytest.fixture 
-def static_soup(client):
-	'''
-	HTML page is constantly updated with new informtion. 
-	Cache static page to test functionality.
-	'''
-	html = open(html_fname, 'r', encoding='utf-8').read()
-	soup = BeautifulSoup(html, 'html.parser')	
-
-	return soup
 
 def test_connect(client):
     _, response = main.connect()
