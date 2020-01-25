@@ -1,13 +1,15 @@
 FROM python:3.7.1
 
-RUN mkdir -p /var/BestFightOddsAPI
+RUN mkdir -p /var/best_fight_odds_api
 
-WORKDIR /var/BestFightOddsAPI
+WORKDIR /var/best_fight_odds_api
 
-COPY . /var/BestFightOddsAPI
+COPY . /var/best_fight_odds_api
 
 RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
 
-ENTRYPOINT pytest -v /var/BestFightOddsAPI/tests/test_flask_api.py && python /var/BestFightOddsAPI/main.py
+EXPOSE 5000
+
+ENTRYPOINT pytest -v /var/best_fight_odds_api/tests/test_flask_api.py && python /var/best_fight_odds_api/main.py
