@@ -10,6 +10,7 @@ RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
 
+# requirement for AWS Elastic Beanstalk
 EXPOSE 5000
 
 ENTRYPOINT pytest -v /var/best_fight_odds_api/tests/test_flask_api.py && python /var/best_fight_odds_api/main.py
