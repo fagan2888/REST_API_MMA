@@ -1,4 +1,4 @@
-from flask import Flask 
+from flask import Flask, make_response, jsonify
 from flask_restful import Resource, Api
 import json
 
@@ -6,6 +6,10 @@ import utils
 
 app = Flask(__name__)
 api = Api(app)
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
 
 class Home(Resource):
     def get(self):
