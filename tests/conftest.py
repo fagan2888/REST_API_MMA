@@ -1,46 +1,33 @@
 '''
 conftest.py stores pytest fixtures that can be used by all test files.
+
+scope='session' --> all functions share one setup and teardown call
+scope='function' --> runs once per function
 '''
 
 from flask import Flask
-import json 
-from bs4 import BeautifulSoup
-import pytest
+import json
+from bs4 import BeautifulSoup  # type: ignore
+import pytest  # type: ignore
 import os
 
-import main
+import utils
+import api
 
-## if running in parent directory, need to append folder path `tests` ##
-if os.getcwd().endswith('tests'):
-	html_fname = 'test_page.html'
-else:
-	html_fname = 'tests/test_page.html'	
 
-'''
-scope='session' --> all functions share one setup and teardown call
-scope='function' --> runs once per function 
-'''
 @pytest.fixture(scope='session')
 def client(request):
-    test_client = main.app.test_client()
+    test_client = api.app.test_client()
 
-    def teardown():
-        pass # databases and resourses have to be freed at the end. But so far we don't have anything
-
-    request.addfinalizer(teardown)
     return test_client
 
-'''
-scope='session' --> all functions share one setup and teardown call
-scope='function' --> runs once per function 
-'''
 @pytest.fixture(scope='session')
 def static_soup(client):
 	'''
-	HTML page is constantly updated with new informtion. 
+	HTML page is constantly updated with new informtion.
 	Cache static page to test functionality.
 	'''
-	html = open(html_fname, 'r', encoding='utf-8').read()
-	soup = BeautifulSoup(html, 'html.parser')	
+	html = open(os.path.join('tests', 'test_page.html'), 'r', encoding='utf-8').read()
+	soup = BeautifulSoup(html, 'html.parser')
 
 	return soup
