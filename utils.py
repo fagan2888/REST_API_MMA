@@ -139,7 +139,7 @@ def get_fighter_odds(fighter_name, soup=None):
 
     spans_fighter = [x for x in soup.find_all('span', {'class':'tw'}) if x.text.lower() == fighter.lower()]
     if not spans_fighter:
-        return 'Fighter name not found. Separate first and last name by "+".'
+        return 'Fighter name not found. Separate first and last name by a +.'
 
     td = spans_fighter[1] ## always take second one ##
 
@@ -147,7 +147,13 @@ def get_fighter_odds(fighter_name, soup=None):
         td = td.find_next('td')
         odds_dic[bettor] = re.findall(td.text)[0] if td.text else ''
 
-    opponent = td.find_next('span', {'class':'tw'}).find_next('span', {'class':'tw'}).text
+    fighters_even_lst = [x.find('span', {'class':'tw'}).text.lower() for x in soup.find_all('tr', {'class':'even'})]
+    fighters_odd_lst = [x.find('span', {'class':'tw'}).text.lower() for x in soup.find_all('tr', {'class':'odd'})]
+
+    if fighter in fighters_even_lst:
+        opponent = fighters_odd_lst[fighters_even_lst.index(fighter)].title()
+    else:
+        opponent = fighters_even_lst[fighters_odd_lst.index(fighter)].title()
 
     fighter_odds_dic = {'odds': odds_dic,
                         'opponent': opponent}
