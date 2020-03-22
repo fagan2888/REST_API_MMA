@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import json
 import requests
 
-def get_html_from_url(url: str = 'https://www.bestfightodds.com/') -> str:
+def get_html_from_url(url: str = 'https://www.bestfightodds.com/'):
     '''
     Gets HTML from url w/ error handling.
     
@@ -35,16 +35,6 @@ def get_html_from_url(url: str = 'https://www.bestfightodds.com/') -> str:
         return None, f'Timeout Error: {e}'
     except requests.exceptions.RequestException as e:
         return None, f'Url error: {e}'
-
-def connect():
-    '''
-    Pulls page from url and converts to beautifulsoup object, to then be used by other funcs.
-    '''
-
-    html = get_html_from_url()
-    soup = BeautifulSoup(html, 'html.parser')
-
-    return soup, response
         
 def get_event_list(soup=None):
     '''
@@ -59,6 +49,16 @@ def get_event_list(soup=None):
     json_events = {k:v for k,v in zip(event_list, event_dates)}
 
     return json_events
+
+def get_num_events(soup=None):
+    if not soup:
+        soup, error = get_html_from_url()
+        if not soup: return error
+
+    events = soup.findAll('div', id=lambda x: x and x.startswith('event'))
+    events = [event for event in events if not event.text.startswith('Future Events')]
+
+    return len(events)
 
 def get_odds_makers_list(soup=None):
     '''
@@ -87,18 +87,22 @@ def get_fighter_list(event_id, soup=None):
         soup, error = get_html_from_url()
         if not soup: return error
     
-    tbls_fighters = soup.find_all('div', {'class': 'table-inner-wrapper'})
+    num_events = get_num_events(soup)
 
     ## event id validity check ##
     if event_id.isdigit():
         event_id = int(event_id)
-        if (event_id >= 0) and (event_id < len(tbls_fighters)):
-            tbl = tbls_fighters[event_id]
-        else:
-            return 'Invalid event number'
+
+        if (event_id > num_events):
+            return f'Number of events are: {num_events}. Select an event number between 1 and {num_events}.'
+        elif (event_id <= 0):
+            return f'Number of events are: {num_events}. Select an event number between 1 and {num_events}.'
     else:
-        return 'Invalid event number'
+        return 'Not a valid event number.'
     
+    tbls_fighters = soup.find_all('div', {'class': 'table-inner-wrapper'})
+    tbl = tbls_fighters[event_id-1]
+
     ## fighter list ##
     fighter_list = []
     for span in tbl.find_all('span', {'class':'tw'}):
@@ -107,7 +111,7 @@ def get_fighter_list(event_id, soup=None):
     
     ## event title ##
     tbls_events = soup.find_all('div', {'class': 'table-header'})
-    tbl = tbls_events[event_id]
+    tbl = tbls_events[event_id-1]
     event_title = [a_href.text for a_href in tbl.find_all('a', href=True) if a_href['href'].startswith('/events/')][0]
 
     json_fighter_list = {event_title: fighter_list}
