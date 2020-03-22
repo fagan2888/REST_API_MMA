@@ -183,7 +183,7 @@ def get_fighter_odds(fighter_name: str, soup=None) -> Union[str, dict]:
     '''
     odds_dic = {}
     opponent = ''
-    re = regex.compile(r'\+\d*')
+    re = regex.compile(r'[+-]?\d*')
     fighter = ' '.join(fighter_name.split('+')).lower()
     
     if fighter.isdigit():
