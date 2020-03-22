@@ -31,11 +31,17 @@ class FighterList(Resource):
 	def get(self, event_id):
 		return utils.get_fighter_list(event_id)
 
+class FighterOdds(Resource):
+	def get(self, fighter_name):
+		return utils.get_fighter_odds(fighter_name)
+
+
 api.add_resource(Home, '/')
 api.add_resource(EventList, '/event_list')
 api.add_resource(OddsMakersList, '/odds_makers_list')
 api.add_resource(NumEvents, '/num_events')
 api.add_resource(FighterList, '/fighter_list/<event_id>')
+api.add_resource(FighterOdds, '/odds/<fighter_name>')
 
 if __name__ == '__main__':
     app.run(debug=True)

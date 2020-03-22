@@ -2,6 +2,7 @@ import urllib
 from bs4 import BeautifulSoup
 import json
 import requests
+import regex
 
 def get_html_from_url(url: str = 'https://www.bestfightodds.com/'):
     '''
@@ -127,12 +128,13 @@ def get_fighter_odds(fighter_name, soup=None):
     odds_dic = {}
     opponent = ''
     fighter = ' '.join(fighter_name.split('+')).lower()
+    re = regex.compile(r'\+\d*')
     
     if fighter.isdigit():
         return 'Invalid fighter name. Separate first and last name by "+".'
 
     if not soup:
-        soup, error = connect()
+        soup, error = get_html_from_url()
         if not soup: return error
 
     spans_fighter = [x for x in soup.find_all('span', {'class':'tw'}) if x.text.lower() == fighter.lower()]
@@ -143,13 +145,13 @@ def get_fighter_odds(fighter_name, soup=None):
 
     for bettor in odds_makers_list_helper(soup):
         td = td.find_next('td')
-        odds_dic[bettor] = td.text.replace('▲', '').replace('▼', '')
+        odds_dic[bettor] = re.findall(td.text)[0] if td.text else ''
 
     opponent = td.find_next('span', {'class':'tw'}).find_next('span', {'class':'tw'}).text
 
     fighter_odds_dic = {'odds': odds_dic,
                         'opponent': opponent}
 
-    json_fighter_odds = json.dumps(fighter_odds_dic)
+    json_fighter_odds = fighter_odds_dic
 
     return json_fighter_odds
