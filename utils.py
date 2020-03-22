@@ -163,6 +163,7 @@ def get_fighter_list(event_id: int, soup=None) -> Union[str, dict]:
     if not valid_event_id:
         return error
 
+    event_id = int(event_id)
     tbls_fighters = soup.find_all('div', {'class': 'table-inner-wrapper'})
     tbl = tbls_fighters[event_id - 1]
 
