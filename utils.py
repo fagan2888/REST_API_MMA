@@ -110,7 +110,7 @@ def get_fighter_list(event_id, soup=None):
     tbl = tbls_events[event_id]
     event_title = [a_href.text for a_href in tbl.find_all('a', href=True) if a_href['href'].startswith('/events/')][0]
 
-    json_fighter_list = json.dumps({event_title: fighter_list})
+    json_fighter_list = {event_title: fighter_list}
     
     return json_fighter_list
 
