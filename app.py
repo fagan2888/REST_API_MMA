@@ -72,14 +72,14 @@ def create_app(app, env_name):
         def post(self, username, password):
             if (not username) or (not password):
                 abort(400, 'Missing username and/or password') # missing arguments
-            if User.query.filter_by(email = username).first() is not None:
+            if User.get_user_by_email(username) is not None:
                 abort(400, 'Username already exists.') # existing user
 
             user = User(username, password)  # password is hashed
             db.session.add(user)
             db.session.commit()
 
-            return redirect('/')
+            return f'Success, {username} added.'
 
     class DeleteUser(Resource):
         @auth.login_required
@@ -87,14 +87,13 @@ def create_app(app, env_name):
             if not username:
                 abort(400, 'Missing username') # missing arguments
 
-            user = User.query.filter_by(email = username).first()
+            user = User.get_user_by_email(username)
             if user is None:
                 abort(400, 'Username does not exists.') # existing user
 
-            db.session.delete(user)
-            db.session.commit()
+            user.delete()
 
-            return redirect('/')
+            return f'Success, {username} deleted.'
 
     api.add_resource(Home, '/')
     api.add_resource(EventList, '/event_list')

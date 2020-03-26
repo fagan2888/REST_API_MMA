@@ -18,11 +18,9 @@ class User(db.Model):
 		db.session.add(self)
 		db.session.commit()
 
-	def update(self, data):
-		for key, item in data.items():
-		  if key == 'password':
-		    self.password = self.__generate_hash(value)
-		  setattr(self, key, item)
+	def update(self, email, password):
+		self.email = email
+		self.password = self.__generate_hash(value)
 		db.session.commit()
 
 	def delete(self):
@@ -31,15 +29,15 @@ class User(db.Model):
 
 	@staticmethod
 	def get_all_users():
-		return UserModel.query.all()
+		return User.query.all()
 
 	@staticmethod
 	def get_one_user(id):
-		return UserModel.query.get(id)
+		return User.query.get(id)
 
 	@staticmethod
 	def get_user_by_email(value):
-		return UserModel.query.filter_by(email=value).first()
+		return User.query.filter_by(email=value).first()
 
 	def __generate_hash(self, password):
 		return bcrypt.generate_password_hash(password, rounds=10).decode("utf-8")
