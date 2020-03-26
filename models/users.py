@@ -20,7 +20,7 @@ class User(db.Model):
 
 	def update(self, email, password):
 		self.email = email
-		self.password = self.__generate_hash(value)
+		self.password = self.__generate_hash(password)
 		db.session.commit()
 
 	def delete(self):
