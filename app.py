@@ -80,8 +80,6 @@ def create_app(app):
             db.session.add(user)
             db.session.commit()
 
-            flash(f'{user.email} added.')
-
             return redirect('/')
 
     class DeleteUser(Resource):
@@ -96,8 +94,6 @@ def create_app(app):
 
             db.session.delete(user)
             db.session.commit()
-
-            flash(f'{user.email} deleted.')
 
             return redirect('/')
 
