@@ -3,16 +3,16 @@ import datetime
 
 from . import db, bcrypt
 
-class UserModel(db.Model):
+class User(db.Model):
 	__tablename__ = 'users'
 
 	id = db.Column(db.Integer, primary_key=True)
 	email = db.Column(db.String(128), unique=True, nullable=False)
 	password = db.Column(db.String(128), nullable=False)
 
-	def __init__(self, data):
-		self.email = data.get('email')
-		self.password = self.__generate_hash(data.get('password'))
+	def __init__(self, email, password):
+		self.email = email
+		self.password = self.__generate_hash(password)
 
 	def save(self):
 		db.session.add(self)
