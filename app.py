@@ -9,14 +9,13 @@ import os
 import utils
 from models import db, bcrypt
 from models.users import User
+from config import app_config
 
-def create_app(app):
+def create_app(app, env_name):
     api = Api(app)
     auth = HTTPBasicAuth()
 
-    app.config.from_object(os.environ['APP_SETTINGS'])
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config.from_object(app_config[env_name])
     bcrypt.init_app(app)
     db.init_app(app)
 
@@ -103,10 +102,10 @@ def create_app(app):
     api.add_resource(NumEvents, '/num_events')
     api.add_resource(FighterList, '/fighter_list/<event_id>')
     api.add_resource(FighterOdds, '/odds/<fighter_name>')
-    api.add_resource(AddUser, '/new_user/<username>/<password>')
+    api.add_resource(AddUser, '/add_user/<username>/<password>')
     api.add_resource(DeleteUser, '/delete_user/<username>')
 
 if __name__ == '__main__':
     app = Flask(__name__)
-    create_app(app)
+    create_app(app, 'testing')
     app.run(debug=True)
