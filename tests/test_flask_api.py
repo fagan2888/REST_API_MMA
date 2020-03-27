@@ -6,7 +6,6 @@ import pytest  # type: ignore
 import base64
 
 import utils
-import pdb
 
 
 def test_index_no_credentials(client, auth):
