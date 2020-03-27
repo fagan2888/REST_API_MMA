@@ -1,10 +1,5 @@
-from flask import Flask, make_response, jsonify, abort, flash, redirect, url_for
+from flask import Flask, make_response, jsonify, abort
 from flask_restful import Resource, Api  # type: ignore
-from flask_httpauth import HTTPBasicAuth
-from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import Bcrypt
-from passlib.hash import sha256_crypt
-import os
 
 import utils
 from models import db, bcrypt
@@ -14,7 +9,6 @@ from config import app_config
 app = Flask(__name__)
 app.config.from_object(app_config['testing'])
 api = Api(app)
-auth = HTTPBasicAuth()
 bcrypt.init_app(app)
 db.init_app(app)
 
