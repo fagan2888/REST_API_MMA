@@ -3,12 +3,22 @@ Auto-discoverable by pytest when named test_*.py.
 Command is `python -m pytest -v`.
 '''
 import pytest  # type: ignore
+import base64
 
 import utils
+import pdb
 
 
-def test_index(client):
+def test_index_no_credentials(client, auth):
     response = client.get('/')
+
+    assert response.status_code == 401
+
+
+def test_index_with_credentials(client, auth):
+    creds = base64.b64encode(b'testuser@mail.com:pass123').decode('utf-8')
+    response = client.get('/', headers={'Authorization': 'Basic ' + creds})
+
     assert response.status_code == 200
 
 
