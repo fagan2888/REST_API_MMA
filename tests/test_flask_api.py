@@ -8,13 +8,15 @@ import base64
 import utils
 
 
-def test_index_no_credentials(client, auth):
+@pytest.mark.skip(reason='Need to create mock database for authentication')
+def test_index_no_credentials(client, db):
     response = client.get('/')
 
     assert response.status_code == 401
 
 
-def test_index_with_credentials(client, auth):
+@pytest.mark.skip(reason='Need to create mock database for authentication')
+def test_index_with_credentials(client, db):
     creds = base64.b64encode(b'testuser@mail.com:pass123').decode('utf-8')
     response = client.get('/', headers={'Authorization': 'Basic ' + creds})
 
