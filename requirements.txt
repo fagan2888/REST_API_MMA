@@ -1,5 +1,7 @@
 flask
 flask_restful
+flask_sqlalchemy
+flask_bcrypt
 beautifulsoup4
 pytest
 requests
