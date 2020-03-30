@@ -1,5 +1,3 @@
-import datetime
-
 from . import db, bcrypt
 
 class User(db.Model):
