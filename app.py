@@ -28,37 +28,31 @@ def verify(username, password):
     return bcrypt.check_password_hash(user.password, password)
 
 class Home(Resource):
-    @auth.login_required
     def get(self):
         return 'www.bestfightodds.com API'
 
 
 class EventList(Resource):
-    @auth.login_required
     def get(self):
         return utils.get_event_list()
 
 
 class OddsMakersList(Resource):
-    @auth.login_required
     def get(self):
         return utils.get_odds_makers_list()
 
 
 class NumEvents(Resource):
-    @auth.login_required
     def get(self):
         return utils.get_num_events()
 
 
 class FighterList(Resource):
-    @auth.login_required
     def get(self, event_id):
         return utils.get_fighter_list(event_id)
 
 
 class FighterOdds(Resource):
-    @auth.login_required
     def get(self, fighter_name):
         return utils.get_fighter_odds(fighter_name)
 
