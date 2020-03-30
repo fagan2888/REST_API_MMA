@@ -20,7 +20,5 @@ Commands to update Postgres database. Reason to use `flask_migrate` is when modi
 To do
 ----
 1. Build web interface for REST API hosted on another site where items can be easily searched for.
-2. Add favorite fighters table, linked to user id
-3. Add url for favorite fighters, unique to each user
 
 
