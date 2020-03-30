@@ -34,7 +34,6 @@ def verify(username, password):
 
 
 class Home(Resource):
-    @auth.login_required
     def get(self):
         return 'www.bestfightodds.com API'
 
