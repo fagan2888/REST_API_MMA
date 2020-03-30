@@ -7,14 +7,16 @@ class FavoriteFighter(db.Model):
 	user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
 	fighter_name = db.Column(db.String(128), primary_key=True, nullable=False)
 
-	def __init__(self, fighter_name):
+	def __init__(self, user_id, fighter_name):
+		self.user_id = user_id
 		self.fighter_name = fighter_name
 
 	def save(self):
 		db.session.add(self)
 		db.session.commit()
 
-	def update(self, fighter_name):
+	def update(self, user_id, fighter_name):
+		self.user_id = user_id
 		self.fighter_name = fighter_name
 		db.session.commit()
 
@@ -23,18 +25,23 @@ class FavoriteFighter(db.Model):
 		db.session.commit()
 
 	@staticmethod
-	def get_all_users():
-		return User.query.all()
+	def get_all_fighters():
+		return FavoriteFighter.query.all()
 
 	@staticmethod
-	def get_one_user(id):
-		return User.query.get(id)
+	def get_fighter(user_id, fighter_name):
+		return FavoriteFighter.query.filter_by(
+			user_id=user_id, fighter_name=fighter_name).first()
+
+	@staticmethod
+	def get_one_fighter(user_id):
+		return FavoriteFighter.query.get(user_id)
 
 	def __repr(self):
-		return f'<id {self.user_id}>'
+		return f'<user_id {self.user_id}>'
 
 	def serialize(self):
 	    return {
-	        'id': self.user_id,
+	        'user_id': self.user_id,
 	        'fighter_name': self.fighter_name,
 	    }
