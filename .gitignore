@@ -1,8 +1,11 @@
 *.pem
 *.ppk
 *.ipynb
-..mypy_cache/
-..pytest_cache/
+.mypy_cache/
+.pytest_cache/
 __pycache__/
 tests/__pycache__/
+migrations/__pycache__/
+models/__pycache__/
+models/.mypy_cache
 .gitignore

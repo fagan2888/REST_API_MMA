@@ -264,7 +264,7 @@ def get_favorite_fighters(fighter_names: list, soup=None) -> Union[str, dict]:
                 break
 
             tbl = a_href.find_next('div', {'class': 'table-inner-wrapper'})
-            for span in tbl.find_all('span', {'class':'tw'}):
+            for span in tbl.find_all('span', {'class': 'tw'}):
                 if span.text.lower() in fighter_names:
                     fav_fighter_dic[span.text.title()]['event_name'] = event_name
                     fav_fighter_dic[span.text.title()]['event_date'] = event_date

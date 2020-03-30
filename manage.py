@@ -1,10 +1,7 @@
-import os
-from flask_script import Manager
-from flask_migrate import Migrate, MigrateCommand
+from flask_script import Manager  # type: ignore
+from flask_migrate import Migrate, MigrateCommand  # type: ignore
 
 from app import app, db
-from models.users import User
-from models.favorite_fighters import FavoriteFighter
 
 migrate = Migrate(app, db)
 manager = Manager(app)

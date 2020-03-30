@@ -1,6 +1,6 @@
 from flask import Flask, make_response, jsonify, abort, g
 from flask_restful import Resource, Api  # type: ignore
-from flask_httpauth import HTTPBasicAuth
+from flask_httpauth import HTTPBasicAuth  # type: ignore
 
 import utils
 from models import db, bcrypt
@@ -15,9 +15,11 @@ auth = HTTPBasicAuth()
 bcrypt.init_app(app)
 db.init_app(app)
 
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'URL is not found'}), 404)
+
 
 @auth.verify_password
 def verify(username, password):
@@ -29,6 +31,7 @@ def verify(username, password):
     g.user = user  # g is a Flask object for view functions to access
 
     return bcrypt.check_password_hash(user.password, password)
+
 
 class Home(Resource):
     @auth.login_required
@@ -60,6 +63,7 @@ class FighterOdds(Resource):
     def get(self, fighter_name: str):
         return utils.get_fighter_odds(fighter_name)
 
+
 class GetFavoriteFighters(Resource):
     @auth.login_required
     def get(self):
@@ -70,6 +74,7 @@ class GetFavoriteFighters(Resource):
             favorite_fighters.append(fighter.fighter_name.title())
 
         return favorite_fighters
+
 
 class AddFavoriteFighter(Resource):
     @auth.login_required
@@ -85,6 +90,7 @@ class AddFavoriteFighter(Resource):
 
         return f'Success, {fighter_name} added for {user_email}.'
 
+
 class DeleteFavoriteFighter(Resource):
     @auth.login_required
     def post(self, fighter_name: str):
@@ -98,6 +104,7 @@ class DeleteFavoriteFighter(Resource):
         else:
             return f'{fighter_name} is not a favorite fighter for {user_email}.'
 
+
 class AddUser(Resource):
     def post(self, username: str, password: str):
         if (not username) or (not password):
@@ -109,6 +116,7 @@ class AddUser(Resource):
         user.save()
 
         return f'Success, {username} added.'
+
 
 class DeleteUser(Resource):
     @auth.login_required
@@ -125,6 +133,7 @@ class DeleteUser(Resource):
         user.delete()
 
         return f'Success, {username} deleted.'
+
 
 api.add_resource(Home, '/')
 api.add_resource(EventList, '/event_list')

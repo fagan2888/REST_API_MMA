@@ -1,5 +1,5 @@
-from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import Bcrypt
+from flask_sqlalchemy import SQLAlchemy  # type: ignore
+from flask_bcrypt import Bcrypt  # type: ignore
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
