@@ -6,8 +6,6 @@ from app import app, db
 from models.users import User
 from models.favorite_fighters import FavoriteFighter
 
-# from models.models import User, FavoriteFighter
-
 migrate = Migrate(app, db)
 manager = Manager(app)
 
