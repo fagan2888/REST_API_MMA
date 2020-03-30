@@ -70,9 +70,9 @@ class GetFavoriteFighters(Resource):
 
         fighters = FavoriteFighter.query.filter_by(user_id=g.user.id)
         for fighter in fighters:
-            favorite_fighters.append(fighter.fighter_name.title())
+            favorite_fighters.append(fighter.fighter_name.lower())
 
-        return favorite_fighters
+        return utils.get_favorite_fighters(favorite_fighters)
 
 
 class AddFavoriteFighter(Resource):
