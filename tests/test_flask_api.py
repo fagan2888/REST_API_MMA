@@ -3,23 +3,11 @@ Auto-discoverable by pytest when named test_*.py.
 Command is `python -m pytest -v`.
 '''
 import pytest  # type: ignore
-import base64
-
 import utils
 
 
-@pytest.mark.skip(reason='Need to create mock database for authentication')
-def test_index_no_credentials(client, db):
+def test_index(client):
     response = client.get('/')
-
-    assert response.status_code == 401
-
-
-@pytest.mark.skip(reason='Need to create mock database for authentication')
-def test_index_with_credentials(client, db):
-    creds = base64.b64encode(b'testuser@mail.com:pass123').decode('utf-8')
-    response = client.get('/', headers={'Authorization': 'Basic ' + creds})
-
     assert response.status_code == 200
 
 
