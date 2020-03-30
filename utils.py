@@ -232,3 +232,41 @@ def get_fighter_odds(fighter_name: str, soup=None) -> Union[str, dict]:
     fighter_odds = {'odds': odds_dic, 'opponent': opponent}
 
     return fighter_odds
+
+
+def get_favorite_fighters(fighter_names: list, soup=None) -> Union[str, dict]:
+    '''
+    Pulls next event name and date for all fighters in fighter_names.
+
+    Input
+    -------
+    fighter_names: list of str fighter names
+    soup: BeautifulSoup of html
+
+    Returns
+    -------
+    fighter_odds: {{odds maker name: odds for fighter}, {'opponent': opponent name}}
+    '''
+    if not soup:
+        soup, error = get_html_from_url()
+        if not soup:
+            return error
+
+    fighter_names = [x.lower() for x in fighter_names]
+    fav_fighter_dic = {k.title(): {'event_name': None, 'event_date': None} for k in fighter_names}
+
+    for a_href in soup.find_all('a', href=True):
+        if a_href['href'].startswith('/events'):
+            event_name = a_href.text
+            event_date = a_href.find_next('span').text
+
+            if event_name.lower() == 'future events':
+                break
+
+            tbl = a_href.find_next('div', {'class': 'table-inner-wrapper'})
+            for span in tbl.find_all('span', {'class':'tw'}):
+                if span.text.lower() in fighter_names:
+                    fav_fighter_dic[span.text.title()]['event_name'] = event_name
+                    fav_fighter_dic[span.text.title()]['event_date'] = event_date
+
+    return {'fighter_names': fav_fighter_dic}
