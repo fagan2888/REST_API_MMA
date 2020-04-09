@@ -1,10 +1,10 @@
 version: 2.1
 jobs:
-  build:
-    working_directory: ~/repo
-
+  test-unit:
     docker:
       - image: circleci/python:3.7
+
+    working_directory: ~/repo
 
     steps:
       - checkout
@@ -13,16 +13,23 @@ jobs:
           command: |
             sudo apt-get update
             pip install -r requirements.txt
-
-  test-unit:
-    steps:
       - run:
           name: run tests
           command: |
             python -m pytest -v ./tests/unit
-            
   test-functional:
+    docker:
+      - image: circleci/python:3.7
+
+    working_directory: ~/repo
+
     steps:
+      - checkout
+      - run:
+          name: install dependencies
+          command: |
+            sudo apt-get update
+            pip install -r requirements.txt
       - run:
           name: run tests
           command: |
