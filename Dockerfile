@@ -1,16 +1,16 @@
-FROM python:3.7.1
+FROM python:3.7
 
-RUN mkdir -p /var/best_fight_odds_api
+RUN mkdir -p /var/app
 
-WORKDIR /var/best_fight_odds_api
+WORKDIR /var/app
 
-COPY . /var/best_fight_odds_api
+COPY . /var/app
 
 RUN pip install --upgrade pip
 
 RUN pip install -r requirements.txt
 
-# requirement for AWS Elastic Beanstalk
 EXPOSE 5000
 
-ENTRYPOINT pytest -v /var/best_fight_odds_api/tests/test_flask_api.py && python /var/best_fight_odds_api/main.py
+CMD ["pytest", "-v", "/var/app/tests/test_flask_api.py"]
+CMD ["python", "/var/app/app.py"]
