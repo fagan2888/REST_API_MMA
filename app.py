@@ -147,4 +147,4 @@ api.add_resource(AddUser, '/add_user/<username>/<password>')
 api.add_resource(DeleteUser, '/delete_user/<username>')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
