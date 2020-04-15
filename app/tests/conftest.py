@@ -24,7 +24,7 @@ def static_soup(client):
     HTML page is constantly updated with new informtion.
     Cache static page to test functionality.
     '''
-    html = open(os.path.join('app', 'tests', 'test_page.html'), 'r', encoding='utf-8').read()
+    html = open(os.path.join('tests', 'test_page.html'), 'r', encoding='utf-8').read()
     soup = BeautifulSoup(html, 'html.parser')
 
     return soup
