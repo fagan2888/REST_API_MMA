@@ -1,0 +1,9 @@
+flask
+flask_restful
+flask_sqlalchemy
+flask_bcrypt
+flask_httpauth
+beautifulsoup4
+pytest
+requests
+regex
