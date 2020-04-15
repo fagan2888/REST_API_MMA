@@ -1,4 +1,5 @@
 flask
+bcrypt
 flask_restful
 flask_sqlalchemy
 flask_bcrypt
