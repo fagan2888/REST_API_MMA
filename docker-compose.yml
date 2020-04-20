@@ -1,6 +1,19 @@
-web:
-  build: ./app
-  ports:
-   - "80:80"
-  volumes:
-   - .:/code
+version: "2.0"
+
+services:
+
+  flask:
+    build: ./app
+    container_name: app
+    restart: always
+    environment:
+      - APP_NAME=MMA_REST_API
+    expose:
+      - 8080
+
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    restart: always
+    ports:
+      - "8090:8090"
