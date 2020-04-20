@@ -18,4 +18,5 @@ CMD ["pytest", "-v", "tests/test_flask_api.py"]
 # CMD ["python3", "app.py"]
 
 # production
-CMD ["python3", "-m", "flask", "run", "--port=80", "--host=0.0.0.0"]
+# CMD ["python3", "-m", "flask", "run", "--port=80", "--host=0.0.0.0"]
+CMD ["uwsgi", "app.ini"]
